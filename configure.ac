@@ -105,6 +105,15 @@ AC_CHECK_FUNCS(uname)
 # check for the various CPU binding calls
 AC_CHECK_FUNCS(mpctl processor_bind sched_setaffinity bind_to_cpu_id bindprocessor)
 
+# Define required POSIX standard
+case $target in
+     *solaris*)
+     AC_DEFINE([_XOPEN_SOURCE], [600], [Use SUSv3])
+     AC_DEFINE([__EXTENSIONS__],,[Enable everything else not in SUSv3 but compatible])
+     AC_PROG_CC_C99
+     ;;
+esac
+
 # see if we should be enabling histogram support
 
 AC_MSG_CHECKING(whether to include histogram support)
