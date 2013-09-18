@@ -581,7 +581,7 @@ extern int
   multicast_ttl,    /* what should the TTL be on mcast dgrams */
   want_keepalive,   /* do we bother setting SO_KEEPALIVE? */
   transport_mss_req;
-
+extern char *io_filename; /* save IO to this file */
 #ifdef WANT_OMNI
 extern void scan_omni_args(int argc, char *argv[]);
 #endif

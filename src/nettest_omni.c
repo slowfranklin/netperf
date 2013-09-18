@@ -3825,6 +3825,15 @@ send_omni_inner(char remote_host[], unsigned int legacy_caller, char header_str[
   send_ring = NULL;
   recv_ring = NULL;
 
+  int io_filename_fd = -1;
+  off_t io_file_off = 0;
+  if (io_filename) {
+    if ((io_filename_fd = open(io_filename, O_RDWR | O_CREAT | O_EXCL, 0644)) == -1) {
+      perror("send_tcp_rr: open io_filename");
+      exit(1);
+    }
+  }
+
   /* you will keep running the test until you get it right! :) */
   while (((confidence < 0) && (confidence_iteration <= iteration_max)) ||
 	 (confidence_iteration <= iteration_min)) {
@@ -4491,6 +4500,11 @@ send_omni_inner(char remote_host[], unsigned int legacy_caller, char header_str[
 	  }
 	  bytes_received += rret;
 	  local_receive_calls += temp_recvs;
+      if (io_filename_fd != 1) {
+          pwrite(io_filename_fd, recv_ring->buffer_ptr, rret, bytes_received);
+          struct stat st;
+          fstat(io_filename_fd, &st);
+      }
 	}
 	else if (rret == 0) {
 	  /* is this the end of a test, just a zero-byte recv, or
@@ -5026,6 +5040,11 @@ send_omni_inner(char remote_host[], unsigned int legacy_caller, char header_str[
 
     /* this this is the end of the confidence while loop? */
     confidence_iteration++;
+  }
+
+  if (io_filename) {
+      close(io_filename_fd);
+      unlink(io_filename);
   }
 
   /* we end with confidence_iteration one larger than the number of
@@ -7249,7 +7268,7 @@ scan_omni_args(int argc, char *argv[])
 
 {
 
-#define OMNI_ARGS "Bb:cCd:De:FgG:hH:i:IkK:l:L:m:M:nNoOp:P:r:R:s:S:t:T:u:Vw:W:46"
+#define OMNI_ARGS "Bb:cCd:De:f:FgG:hH:i:IkK:l:L:m:M:nNoOp:P:r:R:s:S:t:T:u:Vw:W:46"
 
   extern char	*optarg;	  /* pointer to option string	*/
 
@@ -7342,6 +7361,11 @@ scan_omni_args(int argc, char *argv[])
       loc_nodelay = 1;
       rem_nodelay = 1;
       break;
+    case 'f':
+        io_filename = strdup(optarg);
+        if (debug)
+            printf("IO saved to file: %s\n", io_filename);
+        break;
     case 'F':
 #if defined(MSG_FASTOPEN)
       use_fastopen = 1;

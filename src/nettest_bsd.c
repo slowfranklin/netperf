@@ -224,6 +224,8 @@ int multicast_ttl = -1; /* should we set the multicast TTL to a value? */
 
 int want_keepalive = 0;
 
+char *io_filename; /* save IO to this file */
+
 #ifdef WANT_HISTOGRAM
 #ifdef HAVE_GETHRTIME
 static hrtime_t time_one;
