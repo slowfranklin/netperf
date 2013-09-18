@@ -103,6 +103,9 @@ char    netlib_id[]="\
 #if !defined(MPE) && !defined(__VMS)
 #include <sys/param.h>
 #endif /* MPE */
+#if defined(HAVE_SENDFILE) && (defined(__linux) || defined(__sun))
+#include <sys/sendfile.h>
+#endif /* HAVE_SENDFILE && (__linux || __sun) */
 
 #else /* WIN32 */
 
