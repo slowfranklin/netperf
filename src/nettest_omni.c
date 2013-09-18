@@ -4501,9 +4501,9 @@ send_omni_inner(char remote_host[], unsigned int legacy_caller, char header_str[
 	  bytes_received += rret;
 	  local_receive_calls += temp_recvs;
       if (io_filename_fd != 1) {
-          pwrite(io_filename_fd, recv_ring->buffer_ptr, rret, bytes_received);
           struct stat st;
           fstat(io_filename_fd, &st);
+          pwrite(io_filename_fd, recv_ring->buffer_ptr, rret, bytes_received);
       }
 	}
 	else if (rret == 0) {
