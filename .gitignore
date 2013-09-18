@@ -28,3 +28,9 @@ ylwrap
 *.diff.gz
 *~
 *.o
+netperf.spec
+src/.deps/
+src/netperf_version.h
+doc/netperf.info
+src/netperf
+src/netserver
